@@ -6,6 +6,11 @@ const {
   generateOtp,
   updateUser,
   getExpertDetails,
+  getWalletDetails,
+  getJournals,
+  addJournals,
+  addMood,
+  addStress,
 } = require("../controllers/userController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 
@@ -26,5 +31,11 @@ router.post("/verify-user", verifyUser);
 router.get("/get-otp", generateOtp);
 router.post("/update-user", protect, updateUser);
 router.get("/fetch-expert-details", getExpertDetails);
+router.get("/wallet-details", getWalletDetails);
+
+router.get("/journal-details", getJournals);
+router.post("/add-journal", addJournals);
+router.post("/add-mood", addMood);
+router.post("/add-stress", addStress);
 
 module.exports = router;

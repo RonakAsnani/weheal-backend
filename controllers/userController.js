@@ -4,6 +4,10 @@ const ExpertDetails = require("../models/expertDetailModel");
 const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../utils/generateTokens");
 const { sendMail } = require("../utils/sendMail");
+const Wallet = require("../models/walletModel");
+const Journal = require("../models/journalModel");
+const Mood = require("../models/moodModel");
+const Stress = require("../models/StressModel");
 
 const checkUserByEmail = asyncHandler(async (req, res) => {
   const { email } = req.query;
@@ -46,15 +50,20 @@ const verifyUser = asyncHandler(async (req, res) => {
         number: userExists.number,
         profileCode: userExists.profilePicCode,
         assignedExpertId: userExists.assignedExpertId,
+        walletId: userExists?.walletId,
         token: generateToken(userExists._id),
       });
     }
-
+    const wallet = await Wallet.create({
+      balance: 0,
+      transactions: [],
+    });
     const user = await User.create({
       email,
       name,
       bgPicCode: 0,
       profilePicCode: 0,
+      walletId: wallet._id,
     });
     if (user) {
       res.status(201).json({
@@ -66,6 +75,7 @@ const verifyUser = asyncHandler(async (req, res) => {
         bgCode: userExists.bgPicCode,
         profileCode: userExists.profilePicCode,
         assignedExpertId: userExists.assignedExpertId,
+        walletId: userExists?.walletId,
         token: generateToken(user._id),
       });
     } else {
@@ -113,7 +123,7 @@ const updateUser = asyncHandler(async (req, res) => {
       return res.status(201).json({ message: "User not found" });
     }
     console.log(user, "saved");
-    res.status(201).json({
+    return res.status(201).json({
       _id: user._id,
       email: user.email,
       name: user.name,
@@ -122,10 +132,11 @@ const updateUser = asyncHandler(async (req, res) => {
       bgPicCode: user.bgPicCode,
       profilePicCode: user.profilePicCode,
       assignedExpertId: user.assignedExpertId,
+      walletId: user?.walletId,
       token: generateToken(user._id),
     });
   } catch (error) {
-    res.status(201).json({
+    res.status(400).json({
       message: "Error while updating the user",
     });
   }
@@ -135,7 +146,6 @@ const updateUser = asyncHandler(async (req, res) => {
 
 const getExpertDetails = asyncHandler(async (req, res) => {
   try {
-    console.log("gher");
     const { expert } = req.query;
     const user = await ExpertDetails.findOne({ userId: expert });
     if (user) {
@@ -159,10 +169,138 @@ const getExpertDetails = asyncHandler(async (req, res) => {
   }
 });
 
+const getWalletDetails = asyncHandler(async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    const wallet = await Wallet.findOne({ _id: id });
+    console.log(wallet);
+    if (wallet) {
+      res.status(201).json({
+        _id: wallet._id,
+        balance: wallet.balance,
+        transactions: wallet.transactions,
+      });
+    }
+    return res.status(400).json({
+      message: "Cannot fetch balance now!",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message: "Cannot fetch balance now!",
+    });
+  }
+});
+
+const getJournals = asyncHandler(async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    const journals = await Journal.findOne({ userId: id });
+    console.log(journals);
+    if (journals) {
+      res.status(201).json({
+        _id: journals._id,
+        journals: journals.journal,
+      });
+    } else {
+      res.status(201).json({
+        journals: [],
+        _id: 0,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message: "Cannot fetch entries now!",
+    });
+  }
+});
+
+const addJournals = asyncHandler(async (req, res) => {
+  try {
+    console.log("saving");
+    const updateData = req.body;
+    const { userId, title, description } = req.body;
+    const entry = {
+      title,
+      description,
+      createdAt: new Date(),
+    };
+    console.log(userId, updateData);
+    const journalDoc = await Journal.findOneAndUpdate(
+      { userId },
+      { $push: { journal: entry } },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
+    console.log(journalDoc, "saved");
+    return res.status(201).json(journalDoc);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      message: "Error while updating the journal",
+    });
+  }
+
+  return;
+});
+
+const addMood = asyncHandler(async (req, res) => {
+  try {
+    console.log("saving");
+    const updateData = req.body;
+    const { userId, mood } = req.body;
+
+    const moodEntry = await Mood.create({ userId, mood });
+
+    console.log(moodEntry, "saved");
+    return res.status(201).json(moodEntry);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      message: "Error while updating the mood",
+    });
+  }
+
+  return;
+});
+
+const addStress = asyncHandler(async (req, res) => {
+  try {
+    console.log("saving");
+    const updateData = req.body;
+    const { userId, socialStress, inteStress, phyStress } = req.body;
+
+    const stressEntry = await Stress.create({
+      userId,
+      socialStress,
+      inteStress,
+      phyStress,
+    });
+
+    console.log(stressEntry, "saved");
+    return res.status(201).json(stressEntry);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      message: "Error while updating the mood",
+    });
+  }
+
+  return;
+});
+
 module.exports = {
   checkUserByEmail,
   verifyUser,
   generateOtp,
   updateUser,
   getExpertDetails,
+  getWalletDetails,
+  getJournals,
+  addJournals,
+  addMood,
+  addStress,
 };

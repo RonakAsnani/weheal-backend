@@ -6,7 +6,7 @@ var transporter = nodejsmailer.createTransport({
   host: "smtp.gmail.com",
   auth: {
     user: "ronakasnani5@gmail.com",
-    pass: "rjrdnlvqrldlsgtg",
+    pass: "",
   },
 });
 
@@ -20,3 +20,5 @@ function sendMail(to, otp) {
 }
 
 module.exports = { sendMail };
+
+//$env:REACT_NATIVE_PACKAGER_HOSTNAME="192.168.0.110"; npx expo start --host lan

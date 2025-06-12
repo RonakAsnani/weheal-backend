@@ -31,6 +31,9 @@ const userSchema = mongoose.Schema(
     assignedExpertId: {
       type: String,
     },
+    walletId: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
     isAdmin: {
       type: Boolean,
       required: true,
