@@ -11,6 +11,7 @@ const {
   addJournals,
   addMood,
   addStress,
+  getQuestions,
 } = require("../controllers/userController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 
@@ -34,6 +35,7 @@ router.get("/fetch-expert-details", getExpertDetails);
 router.get("/wallet-details", getWalletDetails);
 
 router.get("/journal-details", getJournals);
+router.get("/get-questions", getQuestions);
 router.post("/add-journal", addJournals);
 router.post("/add-mood", addMood);
 router.post("/add-stress", addStress);

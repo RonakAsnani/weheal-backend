@@ -8,6 +8,7 @@ const Wallet = require("../models/walletModel");
 const Journal = require("../models/journalModel");
 const Mood = require("../models/moodModel");
 const Stress = require("../models/StressModel");
+const Question = require("../models/questionsModel");
 
 const checkUserByEmail = asyncHandler(async (req, res) => {
   const { email } = req.query;
@@ -46,9 +47,9 @@ const verifyUser = asyncHandler(async (req, res) => {
         email: userExists.email,
         name: userExists.name,
         isAdmin: userExists.isAdmin,
-        bgCode: userExists.bgPicCode,
+        bgPicCode: userExists.bgPicCode,
         number: userExists.number,
-        profileCode: userExists.profilePicCode,
+        profilePicCode: userExists.profilePicCode,
         assignedExpertId: userExists.assignedExpertId,
         walletId: userExists?.walletId,
         token: generateToken(userExists._id),
@@ -63,6 +64,7 @@ const verifyUser = asyncHandler(async (req, res) => {
       name,
       bgPicCode: 0,
       profilePicCode: 0,
+      assignedExpertId: "6807c4577967cdb0411faf48",
       walletId: wallet._id,
     });
     if (user) {
@@ -72,11 +74,12 @@ const verifyUser = asyncHandler(async (req, res) => {
         name: user.name,
         number: user.number,
         isAdmin: user.isAdmin,
-        bgCode: userExists.bgPicCode,
-        profileCode: userExists.profilePicCode,
-        assignedExpertId: userExists.assignedExpertId,
-        walletId: userExists?.walletId,
+        bgPicCode: user.bgPicCode,
+        profilePicCode: user.profilePicCode,
+        assignedExpertId: user.assignedExpertId,
+        walletId: user?.walletId,
         token: generateToken(user._id),
+        new: true,
       });
     } else {
       res.status(400);
@@ -148,6 +151,7 @@ const getExpertDetails = asyncHandler(async (req, res) => {
   try {
     const { expert } = req.query;
     const user = await ExpertDetails.findOne({ userId: expert });
+    // console.log(user);
     if (user) {
       res.status(201).json({
         _id: user._id,
@@ -155,8 +159,12 @@ const getExpertDetails = asyncHandler(async (req, res) => {
         number: user.number,
         image: user.image,
         experience: user.experience,
-        details: user.details,
+        message: user.message,
         userId: user.userId,
+        languages: user.languages,
+        qualifications: user.qualifications,
+        whatIOffer: user.whatIOffer,
+        whenPeopleReachOut: user.whenPeopleReachOut,
       });
     }
     res.status(400).json({
@@ -198,11 +206,14 @@ const getJournals = asyncHandler(async (req, res) => {
     const { id } = req.query;
 
     const journals = await Journal.findOne({ userId: id });
-    console.log(journals);
-    if (journals) {
+    const sortedJournals = journals.journal.sort(
+      (a, b) => b.createdAt - a.createdAt
+    );
+    console.log(sortedJournals);
+    if (sortedJournals) {
       res.status(201).json({
-        _id: journals._id,
-        journals: journals.journal,
+        // _id: sortedJournals._id,
+        journals: sortedJournals,
       });
     } else {
       res.status(201).json({
@@ -214,6 +225,27 @@ const getJournals = asyncHandler(async (req, res) => {
     console.log(error);
     return res.status(400).json({
       message: "Cannot fetch entries now!",
+    });
+  }
+});
+
+const getQuestions = asyncHandler(async (req, res) => {
+  try {
+    const questions = await Question.find();
+
+    if (questions) {
+      return res.status(201).json({
+        questions: questions[0].questions,
+      });
+    } else {
+      return res.status(201).json({
+        questions: [],
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message: "Cannot fetch questions now!",
     });
   }
 });
@@ -303,4 +335,5 @@ module.exports = {
   addJournals,
   addMood,
   addStress,
+  getQuestions,
 };

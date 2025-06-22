@@ -17,15 +17,20 @@ const expertDetailSchema = mongoose.Schema(
       type: String,
     },
     experience: {
-      type: Number,
+      type: String,
     },
-    details: {
+    message: {
       type: String,
     },
     image: {
       type: String,
     },
-    assignedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    qualifications: {
+      type: String,
+    },
+    languages: [{ type: String }],
+    whatIOffer: [{ type: String }],
+    whenPeopleReachOut: [{ type: String }],
   },
   {
     timestamps: true,
