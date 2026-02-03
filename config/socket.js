@@ -6,7 +6,6 @@ const Wallet = require("../models/walletModel");
 const { sendNotification } = require("../utils/notificationService");
 
 const setupSocket = (server) => {
-  console.log("setting");
   const io = new Server(server, {
     cors: {
       origin: "*",
@@ -31,7 +30,7 @@ const setupSocket = (server) => {
         mentionedUsers,
         type = null,
       }) => {
-        console.log(userId, roomId, text, replyTo);
+        // console.log(userId, roomId, text, replyTo);
         if (type == "group") {
           let message = await Message.create({
             sender: userId,
@@ -91,7 +90,7 @@ const setupSocket = (server) => {
     socket.on(
       "sendThreadMessage",
       async ({ userId, roomId, text, replyTo, mentionedUsers }) => {
-        console.log(userId, roomId, text, replyTo);
+        // console.log(userId, roomId, text, replyTo);
         let message = await Message.create({
           sender: userId,
           room: roomId,
@@ -115,7 +114,7 @@ const setupSocket = (server) => {
     );
 
     socket.on("disconnect", () => {
-      console.log("User disconnected");
+      // console.log("User disconnected");
     });
   });
 

@@ -5,8 +5,8 @@ var transporter = nodejsmailer.createTransport({
   port: 465,
   host: "smtp.gmail.com",
   auth: {
-    user: "ronakasnani5@gmail.com",
-    pass: "rjrdnlvqrldlsgtg",
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
   },
 });
 

@@ -27,7 +27,6 @@ function getTodayIST() {
 
 const getDashboardMetrics = asyncHandler(async (req, res) => {
   const { userId } = req.query;
-  console.log(userId);
   if (!userId) {
     return res.status(500).json({ message: "user id not present" });
   }
@@ -106,7 +105,6 @@ const getDashboardMetrics = asyncHandler(async (req, res) => {
   const todayLog = isTodayLogged
     ? dateToEntryMap.get(todayIst.getTime())
     : null;
-  console.log(todayLog);
   const todayStatus = todayLog
     ? {
         journalAdded: todayLog.journalAdded,

@@ -25,7 +25,7 @@ const modifyActivity = asyncHandler(async (req, res) => {
         },
         { new: true }
       );
-      console.log(updatedActivity, "added");
+
       return res.status(201).json(updatedActivity);
     } else {
       const newActivity = await Activity.create({
