@@ -1,17 +1,16 @@
 const nodejsmailer = require("nodemailer");
 
-var transporter = nodejsmailer.createTransport({
-  secure: true,
-  port: 465,
-  host: "smtp.gmail.com",
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-});
-
 function sendMail(to, otp) {
-  // console.log(to, otp);
+  var transporter = nodejsmailer.createTransport({
+    secure: true,
+    port: 465,
+    host: "smtp.gmail.com",
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  });
+
   transporter.sendMail({
     to: to,
     subject: "OTP for Healzo",
@@ -21,6 +20,15 @@ function sendMail(to, otp) {
 
 function sendNotificationMail(to, user, type) {
   // console.log(to, user, type);
+  var transporter = nodejsmailer.createTransport({
+    secure: true,
+    port: 465,
+    host: "smtp.gmail.com",
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  });
   transporter.sendMail({
     to: to,
     subject: `${type} request from ${user}`,
