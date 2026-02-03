@@ -11,7 +11,7 @@ var transporter = nodejsmailer.createTransport({
 });
 
 function sendMail(to, otp) {
-  console.log(to, otp);
+  // console.log(to, otp);
   transporter.sendMail({
     to: to,
     subject: "OTP for Healzo",
@@ -20,7 +20,7 @@ function sendMail(to, otp) {
 }
 
 function sendNotificationMail(to, user, type) {
-  console.log(to, user, type);
+  // console.log(to, user, type);
   transporter.sendMail({
     to: to,
     subject: `${type} request from ${user}`,

@@ -43,7 +43,6 @@ const verifyUser = asyncHandler(async (req, res) => {
   try {
     const userExists = await User.findOne({ email: email });
     if (userExists) {
-      console.log(userExists);
       return res.status(201).json({
         _id: userExists._id,
         email: userExists.email,
@@ -136,8 +135,8 @@ const generateOtp = asyncHandler(async (req, res) => {
       otp: otp,
     });
   }
-  console.log(email, otp);
-  //   sendMail(email, otp);
+  // console.log(email, otp);
+  sendMail(email, otp);
   return res.status(201).json({
     message: "OTP sent",
   });
