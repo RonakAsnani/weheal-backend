@@ -39,6 +39,10 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    assignedExpertId: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+    responses: { type: Object },
   },
   {
     timestamps: true,

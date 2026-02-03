@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get("/:roomId/messages", getMessages);
 router.get("/get-groups", getGroups);
-router.post("/room", createChatRoom);
+router.post("/get-room", createChatRoom);
 router.get("/get-messages", fetchRoomMessages);
 router.get("/get-replies", fetchReplyMessages);
 
